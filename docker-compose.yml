@@ -1,0 +1,21 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.8-alpine
+
+  receiver:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    depends_on:
+      - rabbitmq
+    command: make run-receiver
+
+  publisher:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    depends_on:
+      - rabbitmq
+    command: make run-publisher
