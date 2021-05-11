@@ -1,6 +1,11 @@
 services:
   rabbitmq:
     image: rabbitmq:3.8-alpine
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   receiver:
     build:
@@ -8,7 +13,8 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     command: make run-receiver
 
   publisher:
@@ -17,5 +23,6 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     command: make run-publisher

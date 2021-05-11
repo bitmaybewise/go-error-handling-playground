@@ -3,47 +3,25 @@ package main
 import (
 	"log"
 
-	"github.com/streadway/amqp"
+	performer "github.com/hlmerscher/go-error-handling-playground/perfomer"
 )
 
 // https://www.rabbitmq.com/tutorials/tutorial-one-go.html
 func main() {
-	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
-	if err != nil {
-		log.Fatalf("%s: %s", "Failed to connect to RabbitMQ", err)
-	}
-	defer conn.Close()
-
-	ch, err := conn.Channel()
-	if err != nil {
-		log.Fatalf("%s: %s", "Failed to open a channel", err)
-	}
-	defer ch.Close()
-
-	q, err := ch.QueueDeclare(
-		"hello", // name
-		false,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
+	dial := &performer.Dial{}
+	channel := &performer.Channel{Dial: dial}
+	queue := &performer.QueueDeclare{Ch: channel}
+	publish := performer.Publish{Ch: channel, QueueDeclare: queue}
+	err := performer.Do(
+		dial.Do,
+		channel.Do,
+		queue.Do,
+		publish.Do,
 	)
-	if err != nil {
-		log.Fatalf("%s: %s", "Failed to declare a queue", err)
-	}
+	defer dial.Conn.Close()
+	defer channel.Ch.Close()
 
-	body := "Hello World!"
-	err = ch.Publish(
-		"",     // exchange
-		q.Name, // routing key
-		false,  // mandatory
-		false,  // immediate
-		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(body),
-		})
 	if err != nil {
-		log.Fatalf("%s: %s", "Failed to publish a message", err)
+		log.Fatal(err)
 	}
-	log.Printf(" [x] Sent %s", body)
 }
