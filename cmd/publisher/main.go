@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"time"
 
 	"github.com/streadway/amqp"
 )
@@ -33,17 +35,20 @@ func main() {
 	}
 
 	body := "Hello World!"
-	err = ch.Publish(
-		"",     // exchange
-		q.Name, // routing key
-		false,  // mandatory
-		false,  // immediate
-		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(body),
-		})
-	if err != nil {
-		log.Fatalf("%s: %s", "Failed to publish a message", err)
+	for d := range time.Tick(time.Second * 10) {
+		msg := fmt.Sprintf("%s - %s", d, body)
+		err = ch.Publish(
+			"",     // exchange
+			q.Name, // routing key
+			false,  // mandatory
+			false,  // immediate
+			amqp.Publishing{
+				ContentType: "text/plain",
+				Body:        []byte(msg),
+			})
+		if err != nil {
+			log.Fatalf("%s: %s", "Failed to publish a message", err)
+		}
+		log.Printf(" [x] Sent %s", msg)
 	}
-	log.Printf(" [x] Sent %s", body)
 }
