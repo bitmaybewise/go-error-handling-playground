@@ -1,2 +1,4 @@
+github.com/hlmerscher/performer v0.0.0-20210513102231-09783042e5c4 h1:lZ0b9LruDCPD78zoPmOhZVSuVllPjLpA9n2Xm/JOFh8=
+github.com/hlmerscher/performer v0.0.0-20210513102231-09783042e5c4/go.mod h1:2GhEgq4gmiZt9+CMh7QVan8w4ojqRp4IkbIPIc7JHNU=
 github.com/streadway/amqp v1.0.0 h1:kuuDrUJFZL1QYL9hUNuCxNObNzB0bV/ZG5jV3RWAQgo=
 github.com/streadway/amqp v1.0.0/go.mod h1:AZpEONHx3DKn8O/DFsRAY58/XVQiIPMTMB1SddzLXVw=
