@@ -8,7 +8,6 @@ import (
 	"github.com/streadway/amqp"
 )
 
-// https://www.rabbitmq.com/tutorials/tutorial-one-go.html
 func main() {
 	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 	if err != nil {
